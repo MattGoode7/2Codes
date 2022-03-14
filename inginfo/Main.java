@@ -6,6 +6,7 @@ import inginfo.*;
 //clases api
 import java.util.*;
 import java.text.*;
+import java.text.Normalizer.Form;
 import java.io.*;
 
 public class Main {
@@ -50,7 +51,7 @@ public class Main {
         int option;
         Scanner dataEntry = new Scanner(System.in);
 
-        System.out.println("****Gestion de alumnos IUA****");
+        System.out.println("\n****Gestion de alumnos IUA****");
         System.out.println("0-salir.");
         System.out.println("1-Listado de alumnos.");
         System.out.println("2-Ordenar por anio de cursado.");
@@ -81,6 +82,11 @@ public class Main {
         Scanner dataEntry = new Scanner(System.in);
         System.out.println("Ingrese dato");
         search = dataEntry.nextLine();
+        
+        search = Normalizer.normalize(search, Normalizer.Form.NFD);
+        search = search.replaceAll("[^\\p{ASCII}]", "");
+        System.out.println(search);
+            
 
         if (search.matches("[+-]?\\d*(\\.\\d+)?")) {
             aux = Integer.parseInt(search);
@@ -94,6 +100,7 @@ public class Main {
         }
         if (search.matches("^[a-zA-Z]*$")) {
             search = search.toLowerCase();
+            
             for (int ii = 0; ii < iua.length; ii++) {
                 if (iua[ii].getName().toLowerCase().substring(0, search.length()).matches(search)
                         || iua[ii].getOrigin().toLowerCase().substring(0, search.length()).matches(search)) {
@@ -103,6 +110,20 @@ public class Main {
                 }
             }
         }
-
+        if(search.matches("([A-Z])([^a-zA-z])*")){
+            System.out.println("Quizas quisiste decir");
+            for (int ii = 0; ii < iua.length; ii++) {
+                if (iua[ii].getName().toLowerCase().substring(0, search.length()).matches("^([A-Z]|[^a-zA-z])+$")
+                        || iua[ii].getOrigin().toLowerCase().substring(0, search.length()).matches("^([A-Z]|[^a-zA-z])+$")) {
+                    System.out.println("\n\n" + iua[ii].getId() + "\t"
+                            + iua[ii].getName() + "\t\t" + iua[ii].getAge()
+                            + "\t\t" + iua[ii].getOrigin() + "\t\t\t" + iua[ii].getYearstudy() + "\n");
+                }
+            }
+            
+        }
+        else{
+            System.out.println("no");
+        }
     }
 }
